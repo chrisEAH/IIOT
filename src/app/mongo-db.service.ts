@@ -8,11 +8,10 @@ export class MongoDbService {
 
   constructor(private http: HttpClient) {}
 
-  getMesswerte(): Observable<IdbEntry[]> {
-    let entries = this.http.get<IdbEntry[]>('http://localhost:8081/api/getMesswerte/');
-    console.log(entries);
-    console.log(entries);
-    return entries;
+  getMesswerte(datumMin?: number, datumMax?: number, messwertMin?: number, messwertMax?: number): Observable<IdbEntry[]> {
+    return this.http.get<IdbEntry[]>('http://localhost:8081/api/getMesswerte/?minDate='
+      + datumMin + '?maxDate=' + datumMax + '?maxValue=' + messwertMax + '?minValue='
+      + messwertMin);
   }
 
 }
