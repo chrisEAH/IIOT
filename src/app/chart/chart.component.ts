@@ -48,7 +48,7 @@ export class ChartComponent implements OnInit {
   drawChart() {
     this.mongoService.getMesswerte(this.datumMin, this.datumMax, this.messwertMin, this.messwertMax).
       subscribe(data => {
-        console.log(data);
+        //console.log(data);
         for (let i = 0; i < data.length; i++) {
           this.values.push(data[i].value);
           this.chartOpt.xAxis.categories.push(data[i].timeStamp);
