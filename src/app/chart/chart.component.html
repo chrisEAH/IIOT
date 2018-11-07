@@ -1,6 +1,19 @@
-<div [chart]="chart"></div>
-Messwert Min:<input [(ngModel)]="messwertMin"> 
-Messwert Max:<input [(ngModel)]="messwertMax">
-Datum Min:<input [(ngModel)]="datumMin"> 
-Datum Max:<input [(ngModel)]="datumMax">  
-<button (click)="updateBtn()">Update</button>
+<div class="chart">
+<p>
+ <canvas id="canvas" >{{ chart }}</canvas>
+</p>
+</div>
+
+<p>
+Frame Anfang:<input [(ngModel)]="frameAnfang"> 
+Frame Ende:<input [(ngModel)]="frameEnde">  
+<button (click)="updateMaxChart()">max Temp.</button>
+</p>
+
+<p>
+Frame Anfang:<input [(ngModel)]="frameAnfang"> 
+Frame Ende:<input [(ngModel)]="frameEnde">
+Frame Intervall:<input [(ngModel)]="frameIntervall">  
+Pixel Abstand:<input [(ngModel)]="pixelEntfernung">  
+<button (click)="updateVarMesspunktMaxTempChart()">var. Messpunkt-Temperatur</button>
+</p>

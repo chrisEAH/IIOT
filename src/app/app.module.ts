@@ -7,7 +7,6 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { ChartComponent } from './chart/chart.component';
 import { MongoDbService } from './mongo-db.service';
-import { ChartModule } from 'angular-highcharts';
 
 
 @NgModule({
@@ -18,7 +17,6 @@ import { ChartModule } from 'angular-highcharts';
   imports: [
     BrowserModule,
     HttpClientModule,
-    ChartModule,
     FormsModule
   ],
   providers: [MongoDbService],

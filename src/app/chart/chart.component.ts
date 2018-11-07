@@ -1,9 +1,6 @@
-import {MongoDbService} from '../mongo-db.service';
-import {Iserie} from './iserie';
-import {Component, OnInit} from '@angular/core';
-import {Chart} from 'angular-highcharts';
-import {SeriesChart} from 'highcharts';
-import {AxisOptions} from 'highcharts/highstock';
+import { MongoDbService } from '../mongo-db.service';
+import { Component, OnInit } from '@angular/core';
+import { Chart } from 'chart.js';
 
 
 @Component({
@@ -15,59 +12,91 @@ export class ChartComponent implements OnInit {
   constructor(private mongoService: MongoDbService) {
   }
 
-  values = new Array<Number>();
-
-  chartOpt = {
-    chart: {
-      type: 'line'
-    },
-    title: {
-      text: 'Linechart'
-    },
-    credits: {
-      enabled: false
-    },
-    xAxis: {
-      categories: []
-    }
-  };
-
   chart: Chart;
-
-  serie = {
-    name: 'mongoDb',
-    data: []
-  };
 
   messwertMax: number = 0;
   messwertMin: number = 0;
-  datumMax: number = 0;
-  datumMin: number = 0;
+  frameEnde: number = 0;
+  frameAnfang: number = 0;
+  frameIntervall: number = 0;
+  pixelEntfernung: number = 0;
+  data = [{
+    x: 15,
+    y: 10
+  }];
 
-
-  drawChart() {
-    this.mongoService.getMesswerte(this.datumMin, this.datumMax, this.messwertMin, this.messwertMax).
+  updateVarMesspunktMaxTempChart() {
+    this.removeData();
+    this.mongoService.getMaxTempFromVariablenMesspunkt(this.frameAnfang, this.frameEnde, this.frameIntervall, this.pixelEntfernung).
       subscribe(data => {
-        //console.log(data);
+        console.log(data);
         for (let i = 0; i < data.length; i++) {
-          this.values.push(data[i].value);
-          this.chartOpt.xAxis.categories.push(data[i].timeStamp);
+          this.addData("frame " + data[i].frame, data[i].frame, data[i].temp);
+          //console.log("frame:" + data[i].frame);
+          //console.log("temp:" + data[i].temp);
         }
-        this.serie['data'] = this.values;
-        this.chart = new Chart(this.chartOpt);
-
-        this.chart.addSerie(this.serie, true, false);
       });
+  }
+
+  updateMaxChart() {
+    this.removeData();
+    this.mongoService.getMaxMesswerte(this.frameAnfang, this.frameEnde).
+      subscribe(data => {
+        console.log(data);
+        for (let i = 0; i < data.length; i++) {
+          this.addData("frame " + data[i].frame, data[i].frame, data[i].temp);
+          //console.log("frame:" + data[i].frame);
+          //console.log("temp:" + data[i].temp);
+        }
+      });
+  }
+
+  initChart() {
+    this.chart = new Chart('canvas', {
+      type: 'scatter',
+      data: {
+        datasets: [{
+          label: 'Scatter Dataset',
+          data: this.data
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: false
+        },
+        scales: {
+          xAxes: [{
+            display: true
+          }],
+          yAxes: [{
+            display: true
+          }],
+        }
+      },
+    });
 
   }
 
-  updateBtn() {
-    this.chart.removeSerie(0);
-    this.values = [];
-    this.drawChart();
-  }
 
   ngOnInit() {
-    this.drawChart();
+    this.initChart();
+
   }
+
+  addData(label, x, y) {
+    this.chart.data.datasets[0].data.push({ x: x, y: y });
+    this.chart.data.datasets[0].backgroundColor = "rgba(255,0,0,1)";
+    this.chart.update();
+  }
+
+  removeData() {
+    this.chart.data.labels.pop();
+    this.chart.data.datasets[0].data = [];
+    this.chart.data.datasets[0].backgroundColor = [];
+    this.chart.update();
+  }
+
+
 }

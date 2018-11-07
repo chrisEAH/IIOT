@@ -1,4 +1,6 @@
 export interface Iserie {
-  name: string;
-  data: Number[];
+  frame: number;
+  temp: number;
+  x:number;
+  y:number;
 }
