@@ -1,6 +1,6 @@
-/node_modules/*
-.git/
-package-lock.json
-.settings/
-.classpath
-.project
+/app/node_modules/*
+/app/.git/
+/app/package-lock.json
+/app/.settings/
+/app/.classpath
+/app/.project

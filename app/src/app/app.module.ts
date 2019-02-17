@@ -9,10 +9,11 @@ import { ChartComponent } from './chart/chart.component';
 import { MongoDbService } from './mongo-db.service';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
-    ChartComponent
+    ChartComponent,
   ],
   imports: [
     BrowserModule,

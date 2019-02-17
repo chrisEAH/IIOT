@@ -1,0 +1,32 @@
+<h3 style=" text-align: center;"> Temperatur</h3>
+<div>
+ <canvas class="chart"  id="canvasTemp">{{ chartTemp }}</canvas>
+</div>
+
+<h3 style=" text-align: center;"> Positions</h3>
+<div>
+  <canvas class="chart" id="canvasPosition" >{{ chartPosition }}</canvas>
+</div>
+
+<p>
+    Frame Anfang:<input [(ngModel)]="frameAnfang"> 
+    Frame Ende:<input [(ngModel)]="frameEnde">  
+    <button [disabled]="!dbSelected" (click)="updateMaxChart()">max Temp.</button>
+    </p>
+    
+    <p>
+    Frame Anfang:<input [(ngModel)]="frameAnfang"> 
+    Frame Ende:<input [(ngModel)]="frameEnde">
+    Frame Intervall:<input [(ngModel)]="frameIntervall">  
+    Pixel Abstand:<input [(ngModel)]="pixelEntfernung">
+
+    <button [disabled]="!dbSelected" (click)="updateVarMesspunktMaxTempChart()">var. Messpunkt-Temperatur</button>
+  </p>
+  
+  <div class="form-group">
+    <label for="power">Datenbank</label>
+    <select class="form-control"
+            [(ngModel)]="dbSelected">
+      <option *ngFor="let db of databases" [value]="db.name">{{db.name}}</option>
+    </select>
+  </div>
