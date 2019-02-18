@@ -3,18 +3,11 @@
  <canvas class="chart"  id="canvasTemp">{{ chartTemp }}</canvas>
 </div>
 
-<h3 style=" text-align: center;"> Positions</h3>
+<h3 style=" text-align: center;"> Position</h3>
 <div>
   <canvas class="chart" id="canvasPosition" >{{ chartPosition }}</canvas>
 </div>
-
-<p>
-    Frame Anfang:<input [(ngModel)]="frameAnfang"> 
-    Frame Ende:<input [(ngModel)]="frameEnde">  
-    <button [disabled]="!dbSelected" (click)="updateMaxChart()">max Temp.</button>
-    </p>
-    
-    <p>
+  <p>
     Frame Anfang:<input [(ngModel)]="frameAnfang"> 
     Frame Ende:<input [(ngModel)]="frameEnde">
     Frame Intervall:<input [(ngModel)]="frameIntervall">  

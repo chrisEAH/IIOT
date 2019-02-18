@@ -160,17 +160,6 @@ export class ChartComponent implements OnInit {
       });
   }
 
-  updateMaxChart() {
-    this.removeDataTemp();
-    this.mongoService.getMaxMesswerte(this.dbSelected, this.frameAnfang, this.frameEnde).
-      subscribe(data => {
-        console.log(data);
-        for (let i = 0; i < data.length; i++) {
-          this.addDataTemp(data[i].frame, data[i].temp, data[i].x, data[i].y);
-        }
-      });
-  }
-
   addDataTemp(frame, temp, x, y) {
     this.chartTemp.data.datasets[0].data.push({ x: frame, y: temp });
     this.chartTemp.data.datasets[0].pointBackgroundColor.push(this.colorUnselect);

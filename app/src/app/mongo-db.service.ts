@@ -9,17 +9,8 @@ export class MongoDbService {
 
   constructor(private http: HttpClient) {}
 
-
-  getMaxMesswerte(collection?:string, frameAnfang?: number, frameEnde?: number): Observable<Iserie[]> {
-    let url = 'http://localhost:8081/api/getMax/?collection='+collection+'&frameAnfang='
-      + frameAnfang + '&frameEnde=' + frameEnde;
-    console.log(url);
-
-    return this.http.get<Iserie[]>(url);
-  }
-
   getMaxTempFromVariablenMesspunkt(collection?:string, frameAnfang?: number, frameEnde?: number, frameIntervall?: number, pixelEntfernung?: number): Observable<Iserie[]> {
-    let url = 'http://localhost:8081/api/getMaxTempFromVariablenMesspunkt/?collection='+collection+'&frameAnfang='
+    let url = 'http://127.0.0.1:8081/api/getMaxTempFromVariablenMesspunkt/?collection='+collection+'&frameAnfang='
       + frameAnfang + '&frameEnde=' + frameEnde + '&frameIntervall='+frameIntervall+'&pixelEntfernung='+pixelEntfernung;
     console.log(url);
 
@@ -27,7 +18,7 @@ export class MongoDbService {
   }
 
   getCollections(): Observable<Idatabase[]> {
-    let url = 'http://localhost:8081/api/getCollections';
+    let url = 'http://127.0.0.1:8081/api/getCollections';
     console.log(url);
 
     return this.http.get<Idatabase[]>(url);
