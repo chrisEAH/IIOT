@@ -1,8 +1,7 @@
 import { MongoDbService } from '../mongo-db.service';
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js';
-import { Idatabase } from '../entities/idatabase';
-import { EventEmitter } from 'events';
+import { Idatabase } from '../idatabase';
 
 
 @Component({
@@ -26,16 +25,20 @@ export class ChartComponent implements OnInit {
 
   databases: Idatabase[];
 
-  dbSelected: string = '';
+  dbSelected: Idatabase;
 
-  selectedDataPointBuffer=0;
+  selectedDataPointBufferTemp=0;
+  selectedDataPointBufferPosition=0;
 
-  messwertMax: number = 0;
-  messwertMin: number = 0;
-  frameEnde: number = 0;
+  
+  frameEnde: number=0;
   frameAnfang: number = 0;
+  frameMax:number=0;
   frameIntervall: number = 0;
-  pixelEntfernung: number = 0;
+
+  pixelEntfernung: String = "0";
+  maszstab:String="1";
+
   data = [
     {
       x: 15,
@@ -51,17 +54,13 @@ export class ChartComponent implements OnInit {
     "colorUnselect",
   ];
 
-  responsive=false;
-
-
-
   initChart() {
     this.chartTemp = new Chart('canvasTemp', {
       type: 'scatter',
       data: {
         datasets: [{
           label: 'Temperatur',
-          data: this.data,
+          data:[ this.data],
           pointBackgroundColor: this.color
         }]
       },
@@ -90,11 +89,11 @@ export class ChartComponent implements OnInit {
           custom:(tooltipModel)=> {      
             if(tooltipModel.dataPoints!=undefined)
             {
-              this.chartPosition.data.datasets[0].pointBackgroundColor[this.selectedDataPointBuffer] = this.colorUnselect;
+              this.chartPosition.data.datasets[0].pointBackgroundColor[this.selectedDataPointBufferTemp] = this.colorUnselect;
               this.chartPosition.update();
 
-              this.selectedDataPointBuffer=tooltipModel.dataPoints[0].index;
-              this.chartPosition.data.datasets[0].pointBackgroundColor[this.selectedDataPointBuffer] = this.colorSelect;
+              this.selectedDataPointBufferTemp=tooltipModel.dataPoints[0].index;
+              this.chartPosition.data.datasets[0].pointBackgroundColor[this.selectedDataPointBufferTemp] = this.colorSelect;
               this.chartPosition.update();
             }
           }
@@ -121,13 +120,13 @@ export class ChartComponent implements OnInit {
           xAxes: [{
             scaleLabel: {
               display: true,
-              labelString: 'X'
+              labelString: 'X in mm'
             }
           }],
           yAxes: [{
             scaleLabel: {
               display: true,
-              labelString: 'Y'
+              labelString: 'Y in mm'
             }
           }]
         },
@@ -136,9 +135,12 @@ export class ChartComponent implements OnInit {
           custom:(tooltipModel)=> {      
             if(tooltipModel.dataPoints!=undefined)
             {
+              this.chartTemp.data.datasets[0].pointBackgroundColor[this.selectedDataPointBufferPosition] = this.colorUnselect;
+              this.chartTemp.update();
 
-              this.chartPosition.data.datasets[0].pointBackgroundColor[tooltipModel.dataPoints[0].index] = this.colorSelect;
-              this.chartPosition.update();
+              this.selectedDataPointBufferPosition=tooltipModel.dataPoints[0].index;
+              this.chartTemp.data.datasets[0].pointBackgroundColor[this.selectedDataPointBufferPosition] = this.colorSelect;
+              this.chartTemp.update();
             }
           }
         }
@@ -146,33 +148,29 @@ export class ChartComponent implements OnInit {
     });
   }
 
-
-
   updateVarMesspunktMaxTempChart() {
-    this.removeDataTemp();
-    this.mongoService.getMaxTempFromVariablenMesspunkt(this.dbSelected, this.frameAnfang, this.frameEnde, this.frameIntervall, this.pixelEntfernung).
+    this.cleanCharts();
+    console.log(this.dbSelected);
+    this.mongoService.getMaxTempFromVariablenMesspunkt(this.dbSelected.name, this.frameAnfang, this.frameEnde, this.frameIntervall, Number(this.pixelEntfernung.replace(/,/g, '.'))/Number(this.maszstab.replace(/,/g, '.'))).
       subscribe(data => {
         console.log(data);
         for (let i = 0; i < data.length; i++) {
-          this.addDataTemp(data[i].frame, data[i].temp, data[i].x, data[i].y);
-          //this.addDataPosition(, data[i].frame);
+          this.addDataToChart(data[i].frame, data[i].temp, data[i].x, data[i].y);
         }
       });
   }
 
-  addDataTemp(frame, temp, x, y) {
+  addDataToChart(frame, temp, x, y) {
     this.chartTemp.data.datasets[0].data.push({ x: frame, y: temp });
     this.chartTemp.data.datasets[0].pointBackgroundColor.push(this.colorUnselect);
-
     this.chartTemp.update();
 
-    this.chartPosition.data.datasets[0].data.push({ x: x, y: y, frame: frame });
+    this.chartPosition.data.datasets[0].data.push({ x: x*Number(this.maszstab.replace(/,/g, '.')), y: y*Number(this.maszstab.replace(/,/g, '.')), frame: frame });
     this.chartPosition.data.datasets[0].pointBackgroundColor.push(this.colorUnselect);
-
     this.chartPosition.update();
   }
 
-  removeDataTemp() {
+  cleanCharts() {
     this.chartTemp.data.datasets[0].data = [];
     this.chartTemp.data.datasets[0].pointBackgroundColor = [];
     this.chartTemp.update();
@@ -185,13 +183,34 @@ export class ChartComponent implements OnInit {
 
   searchDatabases(mongoService: MongoDbService) {
     mongoService.getCollections().subscribe(data => {
+      console.log(data);
       this.databases = data;
     });
   }
 
-  changeColor(index) {
+  /*changeColor(index) {
     this.chartPosition.data.datasets[0].pointBackgroundColor[index] = this.colorSelect;
     this.chartPosition.update();
+  }*/
+
+  setMaxFrame(db: Idatabase)
+  {
+    console.log((db));
+    this.frameMax=db.anzahl;
+    this.frameEnde=db.anzahl;
+  }
+
+  proofInput(i:number)
+  {
+    if(i>this.frameMax)
+    {
+      this.frameEnde=this.frameMax;
+    }
+
+    if(i<0)
+    {
+      this.frameAnfang=0;
+    }
   }
 
 }

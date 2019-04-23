@@ -8,18 +8,18 @@
   <canvas class="chart" id="canvasPosition" >{{ chartPosition }}</canvas>
 </div>
   <p>
-    Frame Anfang:<input [(ngModel)]="frameAnfang"> 
-    Frame Ende:<input [(ngModel)]="frameEnde">
+    Frame Anfang:<input [(ngModel)]="frameAnfang" type="number" (ngModelChange)="proofInput($event)"> 
+    Frame Ende:<input [(ngModel)]="frameEnde" type="number" (ngModelChange)="proofInput($event)">
     Frame Intervall:<input [(ngModel)]="frameIntervall">  
-    Pixel Abstand:<input [(ngModel)]="pixelEntfernung">
+    Abstand in mm:<input [(ngModel)]="pixelEntfernung">
+    Pixel in mm:<input [(ngModel)]="maszstab">
 
-    <button [disabled]="!dbSelected" (click)="updateVarMesspunktMaxTempChart()">var. Messpunkt-Temperatur</button>
+    <button [disabled]="!dbSelected" (click)="updateVarMesspunktMaxTempChart()">Anzeigen</button>
   </p>
   
   <div class="form-group">
     <label for="power">Datenbank</label>
-    <select class="form-control"
-            [(ngModel)]="dbSelected">
-      <option *ngFor="let db of databases" [value]="db.name">{{db.name}}</option>
+    <select class="form-control" [(ngModel)]="dbSelected" (ngModelChange)="setMaxFrame($event)" >
+      <option *ngFor="let db of databases" [ngValue]="db" >{{db.name}}</option>
     </select>
   </div>

@@ -2,10 +2,10 @@
 
 set -e
 
-if [ "$ENV" = "UNIT" ]
+if [ "$ENV" = "PROD" ]
     then
-    echo "running Unit Test"
-else
     echo "running Production"
     ng serve --host 0.0.0.0
+else
+    echo "finish BUILD"
 fi
