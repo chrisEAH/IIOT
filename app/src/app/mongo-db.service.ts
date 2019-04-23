@@ -7,8 +7,8 @@ import {Observable} from 'rxjs';
 @Injectable()
 export class MongoDbService {
 
-  //url="http://10.81.41.71:8080";
-  url="http://127.0.0.1:8080";
+  url="http://10.81.41.71:8080";
+  //url="http://127.0.0.1:8080";
 
   constructor(private http: HttpClient) {}
 
